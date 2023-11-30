@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnionSa.Repository.Context;
 
@@ -11,9 +12,11 @@ using OnionSa.Repository.Context;
 namespace OnionSa.Repository.Migrations
 {
     [DbContext(typeof(OnionSaContext))]
-    partial class OnionSaContextModelSnapshot : ModelSnapshot
+    [Migration("20231129200049_CorrecaoDropChavePrimariaCliente")]
+    partial class CorrecaoDropChavePrimariaCliente
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,7 +27,7 @@ namespace OnionSa.Repository.Migrations
 
             modelBuilder.Entity("OnionSa.Domain.Models.Cliente", b =>
                 {
-                    b.Property<long>("CPFCNPJ")
+                    b.Property<long>("CPFCNPJId")
                         .HasMaxLength(14)
                         .HasColumnType("bigint");
 
@@ -37,7 +40,7 @@ namespace OnionSa.Repository.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
-                    b.HasKey("CPFCNPJ");
+                    b.HasKey("CPFCNPJId");
 
                     b.ToTable("Clientes");
                 });

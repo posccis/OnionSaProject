@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnionSa.Repository.Context;
 
@@ -11,9 +12,11 @@ using OnionSa.Repository.Context;
 namespace OnionSa.Repository.Migrations
 {
     [DbContext(typeof(OnionSaContext))]
-    partial class OnionSaContextModelSnapshot : ModelSnapshot
+    [Migration("20231129200234_CorrecaoChavePrimariaCliente")]
+    partial class CorrecaoChavePrimariaCliente
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

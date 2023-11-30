@@ -18,12 +18,17 @@ namespace OnionSa.Repository.Repositories
             _cntxt = context ?? throw new ArgumentNullException(nameof(context)); ;
             _dbSet = _cntxt.Set<Cliente>();
         }
-        public async void AlterarCliente(Cliente cliente)
+        /// <summary>
+        /// M[etodo responsável por realizar o update de um cliente na tabela.
+        /// </summary>
+        /// <param name="cliente"></param>
+        /// <exception cref="OnionSaRepositoryException"></exception>
+        public void AlterarCliente(Cliente cliente)
         {
             try
             {
                 _dbSet.Update(cliente);
-                await _cntxt.SaveChangesAsync();
+                _cntxt.SaveChanges();
             }
             catch (CannotInsertNullException nullException)
             {
@@ -40,6 +45,11 @@ namespace OnionSa.Repository.Repositories
 
         }
 
+        /// <summary>
+        /// Método responsável por realizar o insert de um cliente na tabela.
+        /// </summary>
+        /// <param name="cliente"></param>
+        /// <exception cref="OnionSaRepositoryException"></exception>
         public async void InserirCliente(Cliente cliente)
         {
             try
@@ -65,7 +75,13 @@ namespace OnionSa.Repository.Repositories
             }
         }
 
-        public async Task<Cliente> ObterClientePorDoc(int documento)
+        /// <summary>
+        /// Método responsável por realizar o select de um cliente através do seu CNPJ/CPF na tabela.
+        /// </summary>
+        /// <param name="documento"></param>
+        /// <returns></returns>
+        /// <exception cref="OnionSaRepositoryException"></exception>
+        public async Task<Cliente> ObterClientePorDoc(long documento)
         {
             try
             {
@@ -78,6 +94,11 @@ namespace OnionSa.Repository.Repositories
             }
         }
 
+        /// <summary>
+        /// Método responsável por realizar o select retornar todos os clientes da tabela.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="OnionSaRepositoryException"></exception>
         public async Task<List<Cliente>> ObterTodosOsClientes()
         {
             try
@@ -91,6 +112,11 @@ namespace OnionSa.Repository.Repositories
             }
         }
 
+        /// <summary>
+        /// Método responsável por realizar o delete de um cliente na tabela.
+        /// </summary>
+        /// <param name="cliente"></param>
+        /// <exception cref="OnionSaRepositoryException"></exception>
         public void RemoverCliente(Cliente cliente)
         {
             try
@@ -100,7 +126,7 @@ namespace OnionSa.Repository.Repositories
             }
             catch (Exception ex)
             {
-                throw new OnionSaRepositoryException($"Um erro ocorreu algo tentar obter o cliente. Valide os dados inseridos e tente novamente.\nMais informações: {ex.Message}");
+                throw new OnionSaRepositoryException($"Um erro ocorreu algo tentar remover o cliente. Valide os dados inseridos e tente novamente.\nMais informações: {ex.Message}");
             }
         }
     }

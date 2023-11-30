@@ -18,12 +18,18 @@ namespace OnionSa.Repository.Repositories
             _cntxt = context ?? throw new ArgumentNullException(nameof(context)); ;
             _dbSet = _cntxt.Set<Produto>();
         }
-        public async void AlterarProduto(Produto produto)
+
+        /// <summary>
+        /// Método responsável por realizar o update de um produto dentro da tabela.
+        /// </summary>
+        /// <param name="produto"></param>
+        /// <exception cref="OnionSaRepositoryException"></exception>
+        public void AlterarProduto(Produto produto)
         {
             try
             {
                 _dbSet.Update(produto);
-                await _cntxt.SaveChangesAsync();
+                _cntxt.SaveChanges();
             }
             catch (CannotInsertNullException nullException)
             {
@@ -40,6 +46,12 @@ namespace OnionSa.Repository.Repositories
 
         }
 
+
+        /// <summary>
+        /// Método responsável por realizar o insert de um produto dentro da tabela.
+        /// </summary>
+        /// <param name="produto"></param>
+        /// <exception cref="OnionSaRepositoryException"></exception>
         public async void InserirProduto(Produto produto)
         {
             try
@@ -65,6 +77,12 @@ namespace OnionSa.Repository.Repositories
             }
         }
 
+        /// <summary>
+        /// Método responsável por retornar da tabela um produto especifico através do seu ID.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <exception cref="OnionSaRepositoryException"></exception>
         public async Task<Produto> ObterProdutoPorId(int id)
         {
             try
@@ -74,10 +92,15 @@ namespace OnionSa.Repository.Repositories
             }
             catch (Exception ex)
             {
-                throw new OnionSaRepositoryException($"Um erro ocorreu algo tentar obter o produto. Valide os dados inseridos e tente novamente.\nMais informações: {ex.Message}");
+                throw new OnionSaRepositoryException($"Um erro ocorreu ao tentar obter o produto. Valide os dados inseridos e tente novamente.\nMais informações: {ex.Message}");
             }
         }
 
+        /// <summary>
+        /// Método responsável por retornar todos os produtos da tabela.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="OnionSaRepositoryException"></exception>
         public async Task<List<Produto>> ObterTodosOsProdutos()
         {
             try
@@ -87,10 +110,15 @@ namespace OnionSa.Repository.Repositories
             }
             catch (Exception ex)
             {
-                throw new OnionSaRepositoryException($"Um erro ocorreu algo tentar obter todos os produtos. Valide os dados inseridos e tente novamente.\nMais informações: {ex.Message}");
+                throw new OnionSaRepositoryException($"Um erro ocorreu ao tentar obter todos os produtos. Valide os dados inseridos e tente novamente.\nMais informações: {ex.Message}");
             }
         }
 
+        /// <summary>
+        /// Método responsável por realizar o delete de um porduto na tabela.
+        /// </summary>
+        /// <param name="produto"></param>
+        /// <exception cref="OnionSaRepositoryException"></exception>
         public void RemoverProduto(Produto produto)
         {
             try
@@ -100,7 +128,7 @@ namespace OnionSa.Repository.Repositories
             }
             catch (Exception ex)
             {
-                throw new OnionSaRepositoryException($"Um erro ocorreu algo tentar obter o produto. Valide os dados inseridos e tente novamente.\nMais informações: {ex.Message}");
+                throw new OnionSaRepositoryException($"Um erro ocorreu ao tentar obter o produto. Valide os dados inseridos e tente novamente.\nMais informações: {ex.Message}");
             }
         }
     }

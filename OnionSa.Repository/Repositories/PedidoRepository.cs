@@ -18,12 +18,18 @@ namespace OnionSa.Repository.Repositories
             _cntxt = context ?? throw new ArgumentNullException(nameof(context)); ;
             _dbSet = _cntxt.Set<Pedido>();
         }
-        public async void AlterarPedido(Pedido pedido)
+
+        /// <summary>
+        /// Método responsável por realizar o update de um pedido na tabela.
+        /// </summary>
+        /// <param name="pedido"></param>
+        /// <exception cref="OnionSaRepositoryException"></exception>
+        public void AlterarPedido(Pedido pedido)
         {
             try
             {
                 _dbSet.Update(pedido);
-                await _cntxt.SaveChangesAsync();
+                _cntxt.SaveChanges();
             }
             catch (CannotInsertNullException nullException)
             {
@@ -40,6 +46,11 @@ namespace OnionSa.Repository.Repositories
 
         }
 
+        /// <summary>
+        /// Método responsável por realizar o insert de um pedido na tabela.
+        /// </summary>
+        /// <param name="pedido"></param>
+        /// <exception cref="OnionSaRepositoryException"></exception>
         public async void InserirPedido(Pedido pedido)
         {
             try
@@ -65,6 +76,12 @@ namespace OnionSa.Repository.Repositories
             }
         }
 
+        /// <summary>
+        /// Método responsável por realizar o select de um pedido através do numero na tabela.
+        /// </summary>
+        /// <param name="numero"></param>
+        /// <returns></returns>
+        /// <exception cref="OnionSaRepositoryException"></exception>
         public async Task<Pedido> ObterPedidoPorNumero(int numero)
         {
             try
@@ -78,6 +95,11 @@ namespace OnionSa.Repository.Repositories
             }
         }
 
+        /// <summary>
+        /// Método responsável por realizar o select retornando todos os pedidos da tabela.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="OnionSaRepositoryException"></exception>
         public async Task<List<Pedido>> ObterTodosOsPedidos()
         {
             try
@@ -91,6 +113,11 @@ namespace OnionSa.Repository.Repositories
             }
         }
 
+        /// <summary>
+        /// Método responsável por realizar o delete de um pedido na tabela.
+        /// </summary>
+        /// <param name="pedido"></param>
+        /// <exception cref="OnionSaRepositoryException"></exception>
         public void RemoverPedido(Pedido pedido)
         {
             try
@@ -100,7 +127,7 @@ namespace OnionSa.Repository.Repositories
             }
             catch (Exception ex)
             {
-                throw new OnionSaRepositoryException($"Um erro ocorreu algo tentar obter o pedido. Valide os dados inseridos e tente novamente.\nMais informações: {ex.Message}");
+                throw new OnionSaRepositoryException($"Um erro ocorreu algo tentar remover o pedido. Valide os dados inseridos e tente novamente.\nMais informações: {ex.Message}");
             }
         }
     }

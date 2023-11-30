@@ -8,7 +8,7 @@ namespace OnionSa.Repository.Interfaces
         void InserirCliente(T cliente);
         void AlterarCliente(T cliente);
         void RemoverCliente(T cliente);
-        Task<T> ObterClientePorDoc(int  documento);
+        Task<T> ObterClientePorDoc(long  documento);
         Task<List<T>> ObterTodosOsClientes();
     }
 }
