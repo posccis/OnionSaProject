@@ -18,7 +18,7 @@ namespace OnionSa.Domain.Models
         [MaxLength(250)]
         public string Titulo { get; set; }
         [Required]    
-        public int preco { get; set; }
+        public int Preco { get; set; }
 
         ICollection<Pedido> Pedidos { get; set; }
     }

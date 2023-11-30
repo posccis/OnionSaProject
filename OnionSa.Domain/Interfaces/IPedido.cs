@@ -12,7 +12,7 @@ namespace OnionSa.Domain.Interfaces
     public interface IPedido
     {
         public int NumeroDoPedido { get; set; }
-        public int CPFCNPJ { get; set; }
+        public long CPFCNPJ { get; set; }
         public Cliente Cliente { get; set; }
         public int ProdutoId { get; set; }
         public Produto Produto { get; set; }

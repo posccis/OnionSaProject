@@ -10,6 +10,6 @@ namespace OnionSa.Domain.Interfaces
     {
         public int ProdutoId { get; set; }
         public string Titulo { get; set; }
-        public int preco { get; set; }
+        public int Preco { get; set; }
     }
 }

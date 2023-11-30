@@ -16,7 +16,7 @@ namespace OnionSa.Domain.Models
         public int NumeroDoPedido { get; set; }
 
         [Required]
-        public int CPFCNPJ { get; set; }
+        public long CPFCNPJ { get; set; }
 
         [ForeignKey("CPFCNPJ")]
         public Cliente Cliente { get; set; }

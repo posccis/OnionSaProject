@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +13,9 @@ namespace OnionSa.Domain.Models
     {
         [Key]
         [MaxLength(14)]
-        public int CPFCNPJ { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public long CPFCNPJ { get; set; }
+
         [Required]
         [MaxLength(250)]
         public string RazaoSocial { get; set; }

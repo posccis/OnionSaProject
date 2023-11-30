@@ -8,7 +8,8 @@ namespace OnionSa.Domain.Interfaces
 {
     public interface ICliente
     {
-        public int CPFCNPJ { get; set; }
+        public long CPFCNPJ { get; set; }
+
         public string RazaoSocial { get; set; }
         public int Cep { get; set; }
     }
