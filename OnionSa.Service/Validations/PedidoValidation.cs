@@ -12,16 +12,22 @@ namespace OnionSa.Service.Validations
     {
         public void ValidaObjetoPedido(Pedido pedido) 
         {
-            if (pedido == null) throw new OnionSaServiceException("O objeto está nulo ou vazio. Revise os dados inseridos ou entre em contato com o suporte da Onion S.A e tente novamente.");
-            if (String.IsNullOrEmpty(pedido.)) throw new OnionSaServiceException("É necessário informar a razão social do pedido. Revise os dados inseridos e tente novamente.");
-            if (pedido.Cep <= 1 || pedido.Cep.ToString().Length < 8 || pedido.Cep.ToString().Length > 8) throw new OnionSaServiceException("É necessário informar um CEP válido. Revise os dados inseridos e tente novamente.");
-            if (pedido.CPFCNPJ.ToString().Length < 11 || pedido.CPFCNPJ.ToString().Length < 14 || pedido.CPFCNPJ.ToString().Length > 14) throw new OnionSaServiceException("É necessário informar um CPF ou CNPJ válido. Revise os dados inseridos e tente novamente.");
+            if (pedido == null) throw new OnionSaServiceException("O objeto está nulo ou vazio. Revise os dados inseridos ou entre em contato com a equipe da Onion S.A e tente novamente.");
+            if (pedido.NumeroDoPedido <= 0) throw new OnionSaServiceException("É necessário informar o numero do pedido. Revise os dados inseridos ou entre em contato com a equipe da Onion S.A e tente novamente.");
+            if (pedido.Cep <= 1 || pedido.Cep.ToString().Length < 8 || pedido.Cep.ToString().Length > 8) throw new OnionSaServiceException("É necessário informar um CEP válido. Revise os dados inseridos ou entre em contato com a equipe da Onion S.A e tente novamente.");
+            if (pedido.CPFCNPJ.ToString().Length < 11 || pedido.CPFCNPJ.ToString().Length < 14 || pedido.CPFCNPJ.ToString().Length > 14) throw new OnionSaServiceException("É necessário informar um CPF ou CNPJ válido. Revise os dados inseridos ou entre em contato com a equipe da Onion S.A e tente novamente.");
+        }
+
+        public void ValidaObjetoDadosCep(DadosCep dadosCep) 
+        {
+            if (dadosCep == null) throw new OnionSaServiceException("Não foi possivel localizar os dados do CEP informado. Valide o CEP inserido ou entre em contato com a equipe de suporte  da Onion S.A e tente novamente.");
+            if (String.IsNullOrEmpty(dadosCep.UF)) throw new OnionSaServiceException("Não foi possivel localizar a UF do CEP informado. Valide o CEP inserido ou entre em contato com a equipe da Onion S.A e tente novamente.");
         }
 
         public void ValidaListaDePedidos(List<Pedido> lista) 
         {
 
-            if(lista.Count <= 0) throw new OnionSaServiceException("A lista está vazia e sem nenhum pedido. Revise os dados inseridos ou entre em contato com o suporte da Onion S.A e tente novamente.");
+            if(lista.Count <= 0) throw new OnionSaServiceException("A lista está vazia e sem nenhum pedido. Revise os dados inseridos ou entre em contato com a equipe da Onion S.A e tente novamente.");
         }
 
 
