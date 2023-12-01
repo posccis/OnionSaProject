@@ -16,6 +16,8 @@ namespace OnionSa.Domain.Interfaces
         public Cliente Cliente { get; set; }
         public int ProdutoId { get; set; }
         public Produto Produto { get; set; }
+
+        public long Cep { get; set; }
         public DateTime Data { get; set; }
     }
 }

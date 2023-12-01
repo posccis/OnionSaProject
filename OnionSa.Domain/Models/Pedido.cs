@@ -13,6 +13,7 @@ namespace OnionSa.Domain.Models
     public class Pedido : IPedido
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int NumeroDoPedido { get; set; }
 
         [Required]
@@ -25,6 +26,10 @@ namespace OnionSa.Domain.Models
         public int ProdutoId { get; set; }
         [ForeignKey("ProdutoId")]
         public Produto Produto { get; set; }
+
+        [Required]
+        [MaxLength(8)]
+        public long Cep { get; set; }
 
         [Required]
         public DateTime Data { get; set; }
