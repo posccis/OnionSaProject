@@ -3,12 +3,12 @@
 
 namespace OnionSa.Repository.Interfaces
 {
-    public interface IPedidoRepository<T> where T : Pedido
+    public interface IPedidoRepository
     {
-        void InserirPedido(T pedido);
-        void AlterarPedido(T pedido);
-        void RemoverPedido(T pedido);
-        Task<T> ObterPedidoPorNumero(int  numero);
-        Task<List<T>> ObterTodosOsPedidos();
+        void InserirPedido<T>(T pedido) where T : Pedido;
+        void AlterarPedido<T>(T pedido) where T : Pedido;
+        void RemoverPedido<T>(T pedido) where T : Pedido;
+        Task<Pedido> ObterPedidoPorNumero(int  numero);
+        Task<List<Pedido>> ObterTodosOsPedidos();
     }
 }

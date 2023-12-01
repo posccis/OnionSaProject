@@ -12,8 +12,8 @@ using OnionSa.Repository.Context;
 namespace OnionSa.Repository.Migrations
 {
     [DbContext(typeof(OnionSaContext))]
-    [Migration("20231128203849_FirstMigration")]
-    partial class FirstMigration
+    [Migration("20231130162225_SecondFirstMigration")]
+    partial class SecondFirstMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,16 +27,9 @@ namespace OnionSa.Repository.Migrations
 
             modelBuilder.Entity("OnionSa.Domain.Models.Cliente", b =>
                 {
-                    b.Property<int>("CPFCNPJ")
-                        .ValueGeneratedOnAdd()
+                    b.Property<long>("CPFCNPJ")
                         .HasMaxLength(14)
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CPFCNPJ"));
-
-                    b.Property<int>("Cep")
-                        .HasMaxLength(8)
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
                     b.Property<string>("RazaoSocial")
                         .IsRequired()
@@ -51,13 +44,14 @@ namespace OnionSa.Repository.Migrations
             modelBuilder.Entity("OnionSa.Domain.Models.Pedido", b =>
                 {
                     b.Property<int>("NumeroDoPedido")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("NumeroDoPedido"));
+                    b.Property<long>("CPFCNPJ")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("ClienteId")
-                        .HasColumnType("int");
+                    b.Property<long>("Cep")
+                        .HasMaxLength(8)
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("Data")
                         .HasColumnType("datetime2");
@@ -67,7 +61,7 @@ namespace OnionSa.Repository.Migrations
 
                     b.HasKey("NumeroDoPedido");
 
-                    b.HasIndex("ClienteId");
+                    b.HasIndex("CPFCNPJ");
 
                     b.HasIndex("ProdutoId");
 
@@ -82,13 +76,13 @@ namespace OnionSa.Repository.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProdutoId"));
 
+                    b.Property<int>("Preco")
+                        .HasColumnType("int");
+
                     b.Property<string>("Titulo")
                         .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
-
-                    b.Property<int>("preco")
-                        .HasColumnType("int");
 
                     b.HasKey("ProdutoId");
 
@@ -98,8 +92,8 @@ namespace OnionSa.Repository.Migrations
             modelBuilder.Entity("OnionSa.Domain.Models.Pedido", b =>
                 {
                     b.HasOne("OnionSa.Domain.Models.Cliente", "Cliente")
-                        .WithMany()
-                        .HasForeignKey("ClienteId")
+                        .WithMany("Pedidos")
+                        .HasForeignKey("CPFCNPJ")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -112,6 +106,11 @@ namespace OnionSa.Repository.Migrations
                     b.Navigation("Cliente");
 
                     b.Navigation("Produto");
+                });
+
+            modelBuilder.Entity("OnionSa.Domain.Models.Cliente", b =>
+                {
+                    b.Navigation("Pedidos");
                 });
 #pragma warning restore 612, 618
         }

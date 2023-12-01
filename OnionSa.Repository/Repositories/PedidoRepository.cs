@@ -9,7 +9,7 @@ using OnionSa.Repository.Interfaces;
 
 namespace OnionSa.Repository.Repositories
 {
-    public class PedidoRepository : IPedidoRepository<Pedido>
+    public class PedidoRepository : IPedidoRepository
     {
         private readonly OnionSaContext _cntxt;
         private readonly DbSet<Pedido> _dbSet;
@@ -24,7 +24,7 @@ namespace OnionSa.Repository.Repositories
         /// </summary>
         /// <param name="pedido"></param>
         /// <exception cref="OnionSaRepositoryException"></exception>
-        public void AlterarPedido(Pedido pedido)
+        public void AlterarPedido<T>(T pedido) where T : Pedido
         {
             try
             {
@@ -51,7 +51,7 @@ namespace OnionSa.Repository.Repositories
         /// </summary>
         /// <param name="pedido"></param>
         /// <exception cref="OnionSaRepositoryException"></exception>
-        public async void InserirPedido(Pedido pedido)
+        public async void InserirPedido<T>(T pedido) where T : Pedido
         {
             try
             {
@@ -118,7 +118,7 @@ namespace OnionSa.Repository.Repositories
         /// </summary>
         /// <param name="pedido"></param>
         /// <exception cref="OnionSaRepositoryException"></exception>
-        public void RemoverPedido(Pedido pedido)
+        public void RemoverPedido<T>(T pedido) where T : Pedido
         {
             try
             {

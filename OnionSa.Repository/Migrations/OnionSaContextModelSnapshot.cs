@@ -28,10 +28,6 @@ namespace OnionSa.Repository.Migrations
                         .HasMaxLength(14)
                         .HasColumnType("bigint");
 
-                    b.Property<int>("Cep")
-                        .HasMaxLength(8)
-                        .HasColumnType("int");
-
                     b.Property<string>("RazaoSocial")
                         .IsRequired()
                         .HasMaxLength(250)
@@ -45,12 +41,13 @@ namespace OnionSa.Repository.Migrations
             modelBuilder.Entity("OnionSa.Domain.Models.Pedido", b =>
                 {
                     b.Property<int>("NumeroDoPedido")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("NumeroDoPedido"));
-
                     b.Property<long>("CPFCNPJ")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("Cep")
+                        .HasMaxLength(8)
                         .HasColumnType("bigint");
 
                     b.Property<DateTime>("Data")

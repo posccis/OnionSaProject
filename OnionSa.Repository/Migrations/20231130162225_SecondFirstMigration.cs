@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace OnionSa.Repository.Migrations
 {
     /// <inheritdoc />
-    public partial class FirstMigration : Migration
+    public partial class SecondFirstMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,10 +15,8 @@ namespace OnionSa.Repository.Migrations
                 name: "Clientes",
                 columns: table => new
                 {
-                    CPFCNPJ = table.Column<int>(type: "int", maxLength: 14, nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RazaoSocial = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
-                    Cep = table.Column<int>(type: "int", maxLength: 8, nullable: false)
+                    CPFCNPJ = table.Column<long>(type: "bigint", maxLength: 14, nullable: false),
+                    RazaoSocial = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -32,7 +30,7 @@ namespace OnionSa.Repository.Migrations
                     ProdutoId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Titulo = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
-                    preco = table.Column<int>(type: "int", nullable: false)
+                    Preco = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -43,18 +41,18 @@ namespace OnionSa.Repository.Migrations
                 name: "Pedidos",
                 columns: table => new
                 {
-                    NumeroDoPedido = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ClienteId = table.Column<int>(type: "int", nullable: false),
+                    NumeroDoPedido = table.Column<int>(type: "int", nullable: false),
+                    CPFCNPJ = table.Column<long>(type: "bigint", nullable: false),
                     ProdutoId = table.Column<int>(type: "int", nullable: false),
+                    Cep = table.Column<long>(type: "bigint", maxLength: 8, nullable: false),
                     Data = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Pedidos", x => x.NumeroDoPedido);
                     table.ForeignKey(
-                        name: "FK_Pedidos_Clientes_ClienteId",
-                        column: x => x.ClienteId,
+                        name: "FK_Pedidos_Clientes_CPFCNPJ",
+                        column: x => x.CPFCNPJ,
                         principalTable: "Clientes",
                         principalColumn: "CPFCNPJ",
                         onDelete: ReferentialAction.Cascade);
@@ -67,9 +65,9 @@ namespace OnionSa.Repository.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Pedidos_ClienteId",
+                name: "IX_Pedidos_CPFCNPJ",
                 table: "Pedidos",
-                column: "ClienteId");
+                column: "CPFCNPJ");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Pedidos_ProdutoId",
