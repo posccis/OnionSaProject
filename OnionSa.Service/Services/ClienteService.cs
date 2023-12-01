@@ -15,12 +15,12 @@ namespace OnionSa.Service.Services
     {
 		private readonly ClienteRepository _repo;
         private readonly OnionSaContext _cntxt;
-        private readonly ProdutoValidation clienteValidation;
+        private readonly ClienteValidation clienteValidation;
         public ClienteService(OnionSaContext cntxt)
         {
             _cntxt = cntxt;
             _repo = new ClienteRepository(_cntxt);
-            clienteValidation = new ProdutoValidation();
+            clienteValidation = new ClienteValidation();
         }
 
         /// <summary>
