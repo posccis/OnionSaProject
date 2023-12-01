@@ -1,7 +1,13 @@
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Internal;
+using Microsoft.IdentityModel.Tokens;
+using Moq;
 using OnionSa.Domain.Models;
 using OnionSa.Repository.Context;
 using OnionSa.Repository.Exceptions;
+using OnionSa.Repository.Interfaces;
 using OnionSa.Repository.Repositories;
+using OnionSa.Service.Services;
 
 namespace OnionSa.Test
 {
@@ -79,8 +85,7 @@ namespace OnionSa.Test
             Cliente cliente = new Cliente()
             {
                 CPFCNPJ = 12229716409,
-                RazaoSocial = "Victor Hugo de Oliveira Gomes",
-                Cep = 54768790,
+                RazaoSocial = "Victor Hugo de Oliveira Gomes"
             };
 
             repo.InserirCliente(cliente);
@@ -115,8 +120,7 @@ namespace OnionSa.Test
             Cliente cliente = new Cliente()
             {
                 CPFCNPJ = 12229716409,
-                RazaoSocial = "Victor Hugo de Oliveira Gomes",
-                Cep = 54768799,
+                RazaoSocial = "Victor Hugo de Oliveira Gomes"
             };
 
 
@@ -213,5 +217,33 @@ namespace OnionSa.Test
         }
         #endregion Testes de Clientes
 
+    }
+
+    public class ServiceTest
+    {
+        [Fact]
+        public void DeveRetornarUmaListaDePedidos()
+        {
+
+            var repoMock = new Mock<IPedidoRepository>();
+
+            CSVService service = new CSVService();
+
+            string csvContent = "Name,Age,Location\nJohn,25,New York\nJane,30,San Francisco";
+
+            var fileName = "test.csv";
+            var stream = new MemoryStream();
+            var writer = new StreamWriter(stream);
+            writer.Write(csvContent);
+            writer.Flush();
+            stream.Position = 0;
+
+            //create FormFile with desired data
+            IFormFile file = new FormFile(stream, 0, stream.Length, "id_from_form", fileName);
+
+            var lista = service.TransformaCSVParaDataTable(file);
+            Assert.NotNull(lista);
+
+        }
     }
 }
