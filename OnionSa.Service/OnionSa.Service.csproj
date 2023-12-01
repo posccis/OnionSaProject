@@ -7,9 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CsvHelper" Version="30.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
+    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\OnionSa.Domain\OnionSa.Domain.csproj" />
     <ProjectReference Include="..\OnionSa.Repository\OnionSa.Repository.csproj" />
-    <ProjectReference Include="..\OnionSa.Test\OnionSa.Test.csproj" />
   </ItemGroup>
 
 </Project>
