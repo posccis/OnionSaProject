@@ -1,11 +1,23 @@
-﻿using OnionSa.Domain.Models;
+﻿using CsvHelper;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
+using Newtonsoft.Json;
+using OnionSa.Domain.Interfaces;
+using OnionSa.Domain.Models;
 using OnionSa.Repository.Context;
+using OnionSa.Repository.Interfaces;
 using OnionSa.Repository.Repositories;
 using OnionSa.Service.Exceptions;
 using OnionSa.Service.Validations;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Globalization;
 using System.Linq;
+using System.Net;
+using System.Net.Http.Json;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,13 +25,11 @@ namespace OnionSa.Service.Services
 {
     public class PedidoService
     {
-        private readonly PedidoRepository _repo;
-        private readonly OnionSaContext _cntxt;
+        private readonly IPedidoRepository _repo;
         private readonly PedidoValidation PedidoValidation;
-        public PedidoService(OnionSaContext cntxt)
+        public PedidoService(IPedidoRepository repo)
         {
-            _cntxt = cntxt;
-            _repo = new PedidoRepository(_cntxt);
+            _repo = repo;
             PedidoValidation = new PedidoValidation();
         }
 
@@ -146,29 +156,238 @@ namespace OnionSa.Service.Services
                 throw new OnionSaServiceException($"Ocorreu um erro ao tentar obter todos os Pedidos. Revise os dados enviados e tente novamente.\nMais detalhes:{ex.Message}");
             }
         }
-        //public async Task<List<Cliente>> ObtemTodosOsPedidosPorCliente(Cliente cliente) 
-        //{
-        //    try
-        //    {
-        //        var clientes = await _repo.ObterTodosOsClientes();
-        //        var clienteResultado = clientes.FirstOrDefault(cl => cl.CPFCNPJ == cliente.CPFCNPJ);
 
-        //        clienteResultado.Pedidos;
+        /// <summary>
+        /// Método responsável por realizar a requisição para a API da 'Viacep' e receber os dados relacionados ao CEP do pedido.
+        /// </summary>
+        /// <param name="cep"></param>
+        /// <returns>Os dados relacionados ao cep do pedido.</returns>
+        /// <exception cref="OnionSaServiceException"></exception>
+        public async Task<DadosCep> RetornaDadosDoCep(long cep) 
+        {
+            string urlCep = $"viacep.com.br/ws/{cep}/json/";
+            DadosCep dadosCep = null;
+            try
+            {
+                using(HttpClient client = new HttpClient())
+                {
+                    var response = await client.GetAsync(urlCep);
+                    if(response.IsSuccessStatusCode)
+                    {
+                        var conteudo = await response.Content.ReadAsStringAsync();
+                        dadosCep = JsonConvert.DeserializeObject<DadosCep>(conteudo);
+                    }
 
-        //        clienteValidation.ValidaListaDeClientes(clientes);
+                    return dadosCep;
+                }
+            }
+            catch (Exception ex)
+            {
 
-        //        return clientes;
+                throw new OnionSaServiceException($"Ocorreu um erro ao obter os detalhes do cep. Revise os dados enviados ou entre em contato com a equipe de suporte da Onion S.A e tente novamente.\nMais detalhes: {ex.Message}.");
+            }
+        }
 
-        //    }
-        //    catch (OnionSaServiceException onionExcp)
-        //    {
-        //        throw onionExcp;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new OnionSaServiceException($"Ocorreu um erro ao tentar obter todos os clientes. Revise os dados enviados e tente novamente.\nMais detalhes:{ex.Message}");
-        //    }
-        //}
+        /// <summary>
+        /// Método responsável por identificar a região de origem do CEP inserido.
+        /// </summary>
+        /// <param name="uf"></param>
+        /// <returns>A região do CEP inserido.</returns>
+        /// <exception cref="OnionSaServiceException"></exception>
+        public async Task<string> IdentificaRegiaoPedido(string uf) 
+        {
+            #region Listas com as regiões
+            // Estados da região Norte
+            List<string> estadosNorte = new List<string> { "AC", "AP", "AM", "PA", "RO", "RR", "TO" };
+
+            // Estados da região Nordeste
+            List<string> estadosNordeste = new List<string> { "AL", "BA", "CE", "MA", "PB", "PE", "PI", "RN", "SE" };
+
+            // Estados da região Centro-Oeste
+            List<string> estadosCentroOeste = new List<string> { "DF", "GO", "MT", "MS" };
+
+            // Estados da região Sudeste
+            List<string> estadosSudeste = new List<string> { "ES", "MG", "RJ", "SP" };
+
+            // Estados da região Sul
+            List<string> estadosSul = new List<string> { "PR", "RS", "SC" };
+            #endregion Listas com as regiões
+
+            try
+            {
+
+
+                //Verificação se o UF do CEP está dentro da lista de alguma região.
+                if (estadosSudeste.Any(e => e == uf))
+                {
+                    //Retorna a região.
+                    return "Sudeste";
+                }
+                else if (estadosSul.Any(e => e == uf))
+                {
+                    return "Sul";
+                }else if (estadosCentroOeste.Any(e => e == uf))
+                {
+                    return "CentroOeste";
+                }
+                else if (estadosNorte.Any(e => e == uf))
+                {
+                    return "Norte";
+
+                }
+                else if (estadosNordeste.Any(e => e == uf))
+                {
+                    return "Nordeste";
+                }
+                //Caso o UF não seja localizado dentro de nenhuma das listas, uma exceção é lançada.
+                else
+                {
+                    throw new OnionSaServiceException("Não foi possivel localizar o UF do CEP disponibilizado. Valide se o CEP foi inserido corretamente ou entre em contato com a equipe de suporte da Onion S.A e tente novamente.");
+                }
+            }
+            catch (OnionSaServiceException onionExc)
+            {
+                throw onionExc;
+            }
+
+            catch (Exception ex)
+            {
+
+                throw new OnionSaServiceException($"Ocorreu um erro ao tentar identificar a região do CEP. Revise os dados inseridos ou entre em contato com a equipe de suporte da Onion S.A e tente novamente.\nMais detalhes: {ex.Message}.");
+            }
+
+        }
+
+        /// <summary>
+        /// Método responsável por calcular o preço final do produto baseando-se na taxa de frete cobrada para sua região.
+        /// </summary>
+        /// <param name="pedido"></param>
+        /// <returns>Retorna o valor do produto somado ao seu frete.</returns>
+        /// <exception cref="OnionSaServiceException"></exception>
+        public async Task<double> CalculaPrecoFinal(Pedido pedido, string regiao) 
+        {
+
+            double precoFinal = 0;
+
+            //Porcentagem utilizada para calcular o frete para cada região
+            double taxaFreteSudeste = 0.1;
+            double taxaFreteNorteNordeste = 0.3;
+            double taxaFreteSulCentro = 0.2;
+
+            try
+            {
+
+
+                //Verificação se o regiao do CEP está dentro da lista de alguma região.
+                if(regiao == "Sudeste" )
+                {
+                    //Calculo do preço sendo somado á texa de frete.
+                    precoFinal = pedido.Produto.Preco + (taxaFreteSudeste * pedido.Produto.Preco);
+                }
+                else if(regiao == "Sul" ||  regiao == "CentroOeste")
+                {
+                    precoFinal = pedido.Produto.Preco + (taxaFreteSulCentro * pedido.Produto.Preco);
+                }
+                else if(regiao == "Norte" || regiao == "Nordeste")
+                {
+                    precoFinal = pedido.Produto.Preco + (taxaFreteNorteNordeste * pedido.Produto.Preco);
+                }
+                return precoFinal;
+
+            }
+            catch (Exception ex)
+            {
+
+                throw new OnionSaServiceException($"Ocorreu um erro ao calcular o valor final do pedido. Revise os dados inseridos ou entre em contato com a equipe de suporte da Onion S.A e tente novamente.\nMais detalhes: {ex.Message}.");
+            }
+
+        }
+
+        /// <summary>
+        /// Método responsável por definir a data de entrega do pedido baseado na sua região.
+        /// </summary>
+        /// <param name="dataDoPedido"></param>
+        /// <param name="regiao"></param>
+        /// <returns>A data de entrega do pedido.</returns>
+        /// <exception cref="OnionSaServiceException"></exception>
+        public async Task<DateOnly> CalculoDataDeEntrega(DateOnly dataDoPedido, string regiao)
+        {
+            //Prazo de entrega baseado na região.
+            int prazoNorteNordeste = 10;
+            int prazoCentrSul = 5;
+            int prazoSudeste = 1;
+
+            DateOnly dataEntrega;
+            try
+            {
+                if (regiao == "Sudeste")
+                {
+                    //Executa o método responsável pelo calculo da data de entrega.
+                    dataEntrega = DefineData(dataDoPedido, prazoSudeste);
+                }
+                else if (regiao == "Sul" || regiao == "CentroOeste")
+                {
+                    dataEntrega = DefineData(dataDoPedido, prazoCentrSul);
+                }
+                else if (regiao == "Norte" || regiao == "Nordeste")
+                {
+                    dataEntrega = DefineData(dataDoPedido, prazoNorteNordeste);
+                }
+                return dataEntrega;
+            }
+            catch(OnionSaServiceException onionExc)
+            {
+                throw onionExc;
+            }
+            catch (Exception ex)
+            {
+
+                throw new OnionSaServiceException($"Ocorreu um erro ao tentar definir a data de entrega do pedido; Valide os dados inseridos ou entre em contato com o suporte da Onion S.A e tente novamente.\nMais detalhes: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Método que adiciona o prazo de entrega á data em que o pedido foi realizado.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="dias"></param>
+        /// <returns>Retorna a data de entrega do pedido.</returns>
+        /// <exception cref="OnionSaServiceException"></exception>
+        public DateOnly DefineData(DateOnly data, int dias) 
+        {
+            int i = 1;
+            DateOnly dataEntrega;
+            try
+            {
+                //O laço irá ser executado enquanto a quantidade de dias úteis do prazo não tiver sido somada.
+                while (i < dias)
+                {
+                    dataEntrega = data.AddDays(i);
+                    //Caso o dia adicionado seja útil, é somado á váriavel i mais 1, caso não, continua o mesmo valor até o proximo dia útil.
+                    if (!VerificaDiaUtil(dataEntrega)) i ++;
+                }
+
+                return dataEntrega;
+            }
+            catch (Exception ex)
+            {
+
+                throw new OnionSaServiceException($"Ocorreu um erro ao tentar definir a data de entrega do pedido. Valide os dados inseridos ou entre em contato com o suporte da Onion S.A e tente novamente.\nMais detalhes: {ex.Message}");
+            }
+        }
+        /// <summary>
+        /// Verifica se um dia na semana é um dia útil ou um final de semana.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns>Retorna true caso o dia seja um final de semana e false caso seja um dia útil.</returns>
+        public bool VerificaDiaUtil(DateOnly data)
+        {
+            return data.DayOfWeek == DayOfWeek.Sunday || data.DayOfWeek == DayOfWeek.Saturday;
+        }
+
+
+
+
     }
 
 }
