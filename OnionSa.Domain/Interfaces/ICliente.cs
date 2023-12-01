@@ -11,6 +11,5 @@ namespace OnionSa.Domain.Interfaces
         public long CPFCNPJ { get; set; }
 
         public string RazaoSocial { get; set; }
-        public int Cep { get; set; }
     }
 }
