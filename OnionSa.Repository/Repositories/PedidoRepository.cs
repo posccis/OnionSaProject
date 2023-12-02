@@ -77,6 +77,38 @@ namespace OnionSa.Repository.Repositories
         }
 
         /// <summary>
+        /// Método responsável por realizar o insert de vários pedidos na tabela.
+        /// </summary>
+        /// <param name="pedidos"></param>
+        /// <exception cref="OnionSaRepositoryException"></exception>
+        public async void InserirVariosPedidos<T>(List<T> pedidos) where T : Pedido
+        {
+            try
+            {
+                await _dbSet.AddRangeAsync(pedidos);
+                await _cntxt.SaveChangesAsync();
+            }
+            catch (UniqueConstraintException nullException)
+            {
+                throw new OnionSaRepositoryException($"O número de pedido que você está tentando inserir já está em uso. Valide os dados inseridos e tente novamente.\nMais informações: {nullException.Message}");
+            }
+            catch (CannotInsertNullException nullException)
+            {
+                throw new OnionSaRepositoryException($"Algum dos atributos obrigatórios do objeto foi enviado nulo ou vazio. Valide os dados inseridos e tente novamente.\nMais informações: {nullException.Message}");
+            }
+            catch (MaxLengthExceededException maxLenException)
+            {
+                throw new OnionSaRepositoryException($"Algum dos atributos do objeto ultrapassou a quantidade máxima de caracteres. Valide os dados inseridos e tente novamente.\nMais informações: {maxLenException.Message}");
+            }
+            catch (Exception ex)
+            {
+                throw new OnionSaRepositoryException($"Um erro ocorreu algo tentar inserir o pedido. Valide os dados inseridos e tente novamente.\nMais informações: {ex.Message}");
+            }
+        }
+
+        
+
+        /// <summary>
         /// Método responsável por realizar o select de um pedido através do numero na tabela.
         /// </summary>
         /// <param name="numero"></param>
@@ -130,5 +162,7 @@ namespace OnionSa.Repository.Repositories
                 throw new OnionSaRepositoryException($"Um erro ocorreu algo tentar remover o pedido. Valide os dados inseridos e tente novamente.\nMais informações: {ex.Message}");
             }
         }
+
+
     }
 }
