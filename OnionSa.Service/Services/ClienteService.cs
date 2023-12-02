@@ -5,6 +5,7 @@ using OnionSa.Service.Exceptions;
 using OnionSa.Service.Validations;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +22,35 @@ namespace OnionSa.Service.Services
             _cntxt = cntxt;
             _repo = new ClienteRepository(_cntxt);
             clienteValidation = new ClienteValidation();
+        }
+
+        /// <summary>
+        /// Método que constrói um objeto Cliente através de um DataRow.
+        /// </summary>
+        /// <param name="linha"></param>
+        /// <returns cref="Cliente">Retorna o objeto cliente extraido DataRow inserido.</returns>
+        /// <exception cref="OnionSaServiceException"></exception>
+        public Cliente CriaObjetoPedido(DataRow linha)
+        {
+            try
+            {
+                Cliente cliente = new Cliente()
+                {
+                    CPFCNPJ = long.Parse(linha[0].ToString()),
+                    RazaoSocial = linha[1].ToString()
+                    
+                };
+
+                return cliente;
+            }
+            catch (OnionSaServiceException onionExcp)
+            {
+                throw onionExcp;
+            }
+            catch (Exception ex)
+            {
+                throw new OnionSaServiceException($"Ocorreu um erro ao tentar inserir o pedido. Revise os dados enviados e tente novamente.\nMais detalhes:{ex.Message}");
+            }
         }
 
         /// <summary>
@@ -42,6 +72,28 @@ namespace OnionSa.Service.Services
             catch (Exception ex)
             {
                 throw new OnionSaServiceException($"Ocorreu um erro ao tentar inserir o cliente. Revise os dados enviados e tente novamente.\nMais detalhes:{ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Método que insere vários clientes.
+        /// </summary>
+        /// <param name="clientes"></param>
+        /// <exception cref="OnionSaServiceException"></exception>
+        public void AdicionaVariosClientes(List<Cliente> clientes)
+        {
+            try
+            {
+                clienteValidation.ValidaListaClientes(clientes);
+                _repo.InserirVariosClientes(clientes);
+            }
+            catch (OnionSaServiceException onionExcp)
+            {
+                throw onionExcp;
+            }
+            catch (Exception ex)
+            {
+                throw new OnionSaServiceException($"Ocorreu um erro ao tentar inserir a lista de clientes. Revise os dados enviados e tente novamente.\nMais detalhes:{ex.Message}");
             }
         }
 
