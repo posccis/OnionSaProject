@@ -32,6 +32,6 @@ namespace OnionSa.Domain.Models
         public long Cep { get; set; }
 
         [Required]
-        public DateTime Data { get; set; }
+        public DateOnly Data { get; set; }
     }
 }

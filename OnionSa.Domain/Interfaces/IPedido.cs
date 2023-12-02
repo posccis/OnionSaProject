@@ -18,6 +18,6 @@ namespace OnionSa.Domain.Interfaces
         public Produto Produto { get; set; }
 
         public long Cep { get; set; }
-        public DateTime Data { get; set; }
+        public DateOnly Data { get; set; }
     }
 }
