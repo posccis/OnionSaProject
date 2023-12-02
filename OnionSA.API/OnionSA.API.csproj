@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>b5ddaf79-6c35-4e3e-976a-273f80d2cf0e</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OnionSa.Domain\OnionSa.Domain.csproj" />
+    <ProjectReference Include="..\OnionSa.Repository\OnionSa.Repository.csproj" />
+    <ProjectReference Include="..\OnionSa.Service\OnionSa.Service.csproj" />
+  </ItemGroup>
+
+</Project>
