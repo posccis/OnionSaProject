@@ -84,7 +84,7 @@ namespace OnionSa.Service.Services
         /// </summary>
         /// <param name="doc"></param>
         /// <returns>Retorna o dado sem os caracteres especiais.</returns>
-        public string TrataCampoDocumento(string doc) 
+        private string TrataCampoDocumento(string doc) 
         { 
             string novoDoc = doc.Replace("-", "").Replace(".", "").Replace("/", "");
             return novoDoc;
@@ -95,7 +95,7 @@ namespace OnionSa.Service.Services
         /// </summary>
         /// <param name="cep"></param>
         /// <returns>Retorna o dado sem os caracteres especiais.</returns>
-        public string TrataCEP(string cep) 
+        private string TrataCEP(string cep) 
         {
             string novoCEP = cep.Replace("-", "");
             return novoCEP;

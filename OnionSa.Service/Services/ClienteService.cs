@@ -1,5 +1,6 @@
 ﻿using OnionSa.Domain.Models;
 using OnionSa.Repository.Context;
+using OnionSa.Repository.Interfaces;
 using OnionSa.Repository.Repositories;
 using OnionSa.Service.Exceptions;
 using OnionSa.Service.Validations;
@@ -14,13 +15,12 @@ namespace OnionSa.Service.Services
 {
     public class ClienteService
     {
-		private readonly ClienteRepository _repo;
+		private readonly IClienteRepository _repo;
         private readonly OnionSaContext _cntxt;
         private readonly ClienteValidation clienteValidation;
-        public ClienteService(OnionSaContext cntxt)
+        public ClienteService(IClienteRepository repo)
         {
-            _cntxt = cntxt;
-            _repo = new ClienteRepository(_cntxt);
+            _repo = repo;
             clienteValidation = new ClienteValidation();
         }
 
@@ -30,7 +30,7 @@ namespace OnionSa.Service.Services
         /// <param name="linha"></param>
         /// <returns cref="Cliente">Retorna o objeto cliente extraido DataRow inserido.</returns>
         /// <exception cref="OnionSaServiceException"></exception>
-        public Cliente CriaObjetoPedido(DataRow linha)
+        public Cliente CriaObjetoCliente(DataRow linha)
         {
             try
             {
