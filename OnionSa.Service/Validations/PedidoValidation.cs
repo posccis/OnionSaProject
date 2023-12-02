@@ -10,6 +10,12 @@ namespace OnionSa.Service.Validations
 {
     public class PedidoValidation
     {
+
+        public void ValidaListaPedidos(List<Pedido> pedidos) 
+        {
+            if(pedidos.Count == 0) throw new OnionSaServiceException("A lista de pedidos está vázia. Revise os dados inseridos ou entre em contato com a equipe da Onion S.A e tente novamente.");
+        }
+
         public void ValidaObjetoPedido(Pedido pedido) 
         {
             if (pedido == null) throw new OnionSaServiceException("O objeto está nulo ou vazio. Revise os dados inseridos ou entre em contato com a equipe da Onion S.A e tente novamente.");
