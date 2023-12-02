@@ -34,6 +34,36 @@ namespace OnionSa.Service.Services
         }
 
         /// <summary>
+        /// Método que constrói um objeto pedido através de um DataRow.
+        /// </summary>
+        /// <param name="linha"></param>
+        /// <returns cref="Pedido">Retorna o objeto Pedido extraido DataRow inserido.</returns>
+        /// <exception cref="OnionSaServiceException"></exception>
+        public Pedido CriaObjetoPedido(DataRow linha)
+        {
+            try
+            {
+                Pedido pedido = new Pedido()
+                {
+                    CPFCNPJ = long.Parse(linha[0].ToString()),
+                    Cep = long.Parse(linha[2].ToString()),
+                    Data = DateOnly.Parse(linha[5].ToString()),
+                };
+
+                
+                return pedido;
+            }
+            catch (OnionSaServiceException onionExcp)
+            {
+                throw onionExcp;
+            }
+            catch (Exception ex)
+            {
+                throw new OnionSaServiceException($"Ocorreu um erro ao tentar inserir o pedido. Revise os dados enviados e tente novamente.\nMais detalhes:{ex.Message}");
+            }
+        }
+
+        /// <summary>
         /// Método que insere um pedido.
         /// </summary>
         /// <param name="pedido"></param>
@@ -54,6 +84,29 @@ namespace OnionSa.Service.Services
                 throw new OnionSaServiceException($"Ocorreu um erro ao tentar inserir o pedido. Revise os dados enviados e tente novamente.\nMais detalhes:{ex.Message}");
             }
         }
+
+        /// <summary>
+        /// Adiciona vários pedidos.
+        /// </summary>
+        /// <param name="pedidos"></param>
+        /// <exception cref="OnionSaServiceException"></exception>
+        public void AdicionaVariosPedidos(List<Pedido> pedidos)
+        {
+            try
+            {
+                PedidoValidation.ValidaListaPedidos(pedidos);
+                _repo.InserirVariosPedidos(pedidos);
+            }
+            catch (OnionSaServiceException onionExcp)
+            {
+                throw onionExcp;
+            }
+            catch (Exception ex)
+            {
+                throw new OnionSaServiceException($"Ocorreu um erro ao tentar inserir a lista de pedidos. Revise os dados enviados e tente novamente.\nMais detalhes:{ex.Message}");
+            }
+        }
+
 
         /// <summary>
         /// Método que altera os dados de um pedido.
