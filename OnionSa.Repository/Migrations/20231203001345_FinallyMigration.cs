@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace OnionSa.Repository.Migrations
 {
     /// <inheritdoc />
-    public partial class SecondFirstMigration : Migration
+    public partial class FinallyMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,7 +17,7 @@ namespace OnionSa.Repository.Migrations
                 name: "Clientes",
                 columns: table => new
                 {
-                    CPFCNPJ = table.Column<long>(type: "bigint", maxLength: 14, nullable: false),
+                    CPFCNPJ = table.Column<string>(type: "nvarchar(14)", maxLength: 14, nullable: false),
                     RazaoSocial = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false)
                 },
                 constraints: table =>
@@ -41,15 +43,16 @@ namespace OnionSa.Repository.Migrations
                 name: "Pedidos",
                 columns: table => new
                 {
+                    Id = table.Column<int>(type: "int", nullable: false),
                     NumeroDoPedido = table.Column<int>(type: "int", nullable: false),
-                    CPFCNPJ = table.Column<long>(type: "bigint", nullable: false),
+                    CPFCNPJ = table.Column<string>(type: "nvarchar(14)", nullable: false),
                     ProdutoId = table.Column<int>(type: "int", nullable: false),
-                    Cep = table.Column<long>(type: "bigint", maxLength: 8, nullable: false),
+                    Cep = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
                     Data = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Pedidos", x => x.NumeroDoPedido);
+                    table.PrimaryKey("PK_Pedidos", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Pedidos_Clientes_CPFCNPJ",
                         column: x => x.CPFCNPJ,
@@ -62,6 +65,16 @@ namespace OnionSa.Repository.Migrations
                         principalTable: "Produtos",
                         principalColumn: "ProdutoId",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Produtos",
+                columns: new[] { "ProdutoId", "Preco", "Titulo" },
+                values: new object[,]
+                {
+                    { 1, 1000, "Celular" },
+                    { 2, 3000, "Notebook" },
+                    { 3, 5000, "Televisão" }
                 });
 
             migrationBuilder.CreateIndex(

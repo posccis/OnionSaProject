@@ -29,7 +29,6 @@ namespace OnionSa.Repository.Repositories
             try
             {
                 _dbSet.Update(pedido);
-                _cntxt.SaveChanges();
             }
             catch (CannotInsertNullException nullException)
             {
@@ -56,7 +55,6 @@ namespace OnionSa.Repository.Repositories
             try
             {
                 await _dbSet.AddAsync(pedido);
-                await _cntxt.SaveChangesAsync();
             }
             catch (UniqueConstraintException nullException)
             {
@@ -81,12 +79,11 @@ namespace OnionSa.Repository.Repositories
         /// </summary>
         /// <param name="pedidos"></param>
         /// <exception cref="OnionSaRepositoryException"></exception>
-        public async void InserirVariosPedidos<T>(List<T> pedidos) where T : Pedido
+        public  void InserirVariosPedidos<T>(List<T> pedidos) where T : Pedido
         {
             try
             {
-                await _dbSet.AddRangeAsync(pedidos);
-                await _cntxt.SaveChangesAsync();
+                _dbSet.AddRange(pedidos);
             }
             catch (UniqueConstraintException nullException)
             {
@@ -155,6 +152,22 @@ namespace OnionSa.Repository.Repositories
             try
             {
                 _dbSet.Remove(pedido);
+            }
+            catch (Exception ex)
+            {
+                throw new OnionSaRepositoryException($"Um erro ocorreu algo tentar remover o pedido. Valide os dados inseridos e tente novamente.\nMais informações: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Método responsável por realizar o delete de um pedido na tabela.
+        /// </summary>
+        /// <param name="pedido"></param>
+        /// <exception cref="OnionSaRepositoryException"></exception>
+        public void Save()
+        {
+            try
+            {
                 _cntxt.SaveChanges();
             }
             catch (Exception ex)
@@ -162,6 +175,8 @@ namespace OnionSa.Repository.Repositories
                 throw new OnionSaRepositoryException($"Um erro ocorreu algo tentar remover o pedido. Valide os dados inseridos e tente novamente.\nMais informações: {ex.Message}");
             }
         }
+
+
 
 
     }

@@ -28,7 +28,6 @@ namespace OnionSa.Repository.Repositories
             try
             {
                 _dbSet.Update(cliente);
-                _cntxt.SaveChanges();
             }
             catch (CannotInsertNullException nullException)
             {
@@ -55,7 +54,6 @@ namespace OnionSa.Repository.Repositories
             try
             {
                 await _dbSet.AddAsync(cliente);
-                await _cntxt.SaveChangesAsync();
             }
             catch (UniqueConstraintException nullException)
             {
@@ -84,8 +82,7 @@ namespace OnionSa.Repository.Repositories
         {
             try
             {
-                await _dbSet.AddRangeAsync(clientes);
-                await _cntxt.SaveChangesAsync();
+                _dbSet.AddRange(clientes);
             }
             catch (UniqueConstraintException nullException)
             {
@@ -111,7 +108,7 @@ namespace OnionSa.Repository.Repositories
         /// <param name="documento"></param>
         /// <returns></returns>
         /// <exception cref="OnionSaRepositoryException"></exception>
-        public async Task<Cliente> ObterClientePorDoc(long documento)
+        public async Task<Cliente> ObterClientePorDoc(string documento)
         {
             try
             {
@@ -152,7 +149,6 @@ namespace OnionSa.Repository.Repositories
             try
             {
                 _dbSet.Remove(cliente);
-                _cntxt.SaveChanges();
             }
             catch (Exception ex)
             {

@@ -11,5 +11,6 @@ namespace OnionSa.Repository.Interfaces
         void RemoverPedido<T>(T pedido) where T : Pedido;
         Task<Pedido> ObterPedidoPorNumero(int  numero);
         Task<List<Pedido>> ObterTodosOsPedidos();
+        void Save();
     }
 }

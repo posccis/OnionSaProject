@@ -9,7 +9,7 @@ using OnionSa.Repository.Interfaces;
 
 namespace OnionSa.Repository.Repositories
 {
-    public class ProdutoRepository : IProdutoRepository<Produto>
+    public class ProdutoRepository : IProdutoRepository
     {
         private readonly OnionSaContext _cntxt;
         private readonly DbSet<Produto> _dbSet;
@@ -24,7 +24,7 @@ namespace OnionSa.Repository.Repositories
         /// </summary>
         /// <param name="produto"></param>
         /// <exception cref="OnionSaRepositoryException"></exception>
-        public void AlterarProduto(Produto produto)
+        public void AlterarProduto<T>(T produto) where T : Produto
         {
             try
             {
@@ -52,7 +52,7 @@ namespace OnionSa.Repository.Repositories
         /// </summary>
         /// <param name="produto"></param>
         /// <exception cref="OnionSaRepositoryException"></exception>
-        public async void InserirProduto(Produto produto)
+        public async void InserirProduto<T>(T produto) where T : Produto
         {
             try
             {
@@ -95,6 +95,25 @@ namespace OnionSa.Repository.Repositories
                 throw new OnionSaRepositoryException($"Um erro ocorreu ao tentar obter o produto. Valide os dados inseridos e tente novamente.\nMais informações: {ex.Message}");
             }
         }
+        
+        /// <summary>
+        /// Método responsável por retornar da tabela um produto especifico através do seu ID.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <exception cref="OnionSaRepositoryException"></exception>
+        public async Task<Produto> ObterProdutoPorTitulo(string titulo)
+        {
+            try
+            {
+                var produto = await _dbSet.FirstOrDefaultAsync(x => x.Titulo == titulo);
+                return produto;
+            }
+            catch (Exception ex)
+            {
+                throw new OnionSaRepositoryException($"Um erro ocorreu ao tentar obter o produto. Valide os dados inseridos e tente novamente.\nMais informações: {ex.Message}");
+            }
+        }
 
         /// <summary>
         /// Método responsável por retornar todos os produtos da tabela.
@@ -119,7 +138,7 @@ namespace OnionSa.Repository.Repositories
         /// </summary>
         /// <param name="produto"></param>
         /// <exception cref="OnionSaRepositoryException"></exception>
-        public void RemoverProduto(Produto produto)
+        public void RemoverProduto<T>(T produto) where T : Produto
         {
             try
             {

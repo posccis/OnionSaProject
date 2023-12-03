@@ -12,8 +12,8 @@ using OnionSa.Repository.Context;
 namespace OnionSa.Repository.Migrations
 {
     [DbContext(typeof(OnionSaContext))]
-    [Migration("20231130162225_SecondFirstMigration")]
-    partial class SecondFirstMigration
+    [Migration("20231203004741_SettingIdMigration")]
+    partial class SettingIdMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,9 +27,9 @@ namespace OnionSa.Repository.Migrations
 
             modelBuilder.Entity("OnionSa.Domain.Models.Cliente", b =>
                 {
-                    b.Property<long>("CPFCNPJ")
+                    b.Property<string>("CPFCNPJ")
                         .HasMaxLength(14)
-                        .HasColumnType("bigint");
+                        .HasColumnType("nvarchar(14)");
 
                     b.Property<string>("RazaoSocial")
                         .IsRequired()
@@ -43,23 +43,28 @@ namespace OnionSa.Repository.Migrations
 
             modelBuilder.Entity("OnionSa.Domain.Models.Pedido", b =>
                 {
-                    b.Property<int>("NumeroDoPedido")
-                        .HasColumnType("int");
+                    b.Property<string>("Ido")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<long>("CPFCNPJ")
-                        .HasColumnType("bigint");
+                    b.Property<string>("CPFCNPJ")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(14)");
 
-                    b.Property<long>("Cep")
+                    b.Property<string>("Cep")
+                        .IsRequired()
                         .HasMaxLength(8)
-                        .HasColumnType("bigint");
+                        .HasColumnType("nvarchar(8)");
 
                     b.Property<DateTime>("Data")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("NumeroDoPedido")
+                        .HasColumnType("int");
+
                     b.Property<int>("ProdutoId")
                         .HasColumnType("int");
 
-                    b.HasKey("NumeroDoPedido");
+                    b.HasKey("Ido");
 
                     b.HasIndex("CPFCNPJ");
 
@@ -87,6 +92,26 @@ namespace OnionSa.Repository.Migrations
                     b.HasKey("ProdutoId");
 
                     b.ToTable("Produtos");
+
+                    b.HasData(
+                        new
+                        {
+                            ProdutoId = 1,
+                            Preco = 1000,
+                            Titulo = "Celular"
+                        },
+                        new
+                        {
+                            ProdutoId = 2,
+                            Preco = 3000,
+                            Titulo = "Notebook"
+                        },
+                        new
+                        {
+                            ProdutoId = 3,
+                            Preco = 5000,
+                            Titulo = "Televisão"
+                        });
                 });
 
             modelBuilder.Entity("OnionSa.Domain.Models.Pedido", b =>

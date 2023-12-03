@@ -17,6 +17,15 @@ namespace OnionSa.Repository.Context
         public DbSet<Cliente> Clientes { get; set; }
         public DbSet<Produto> Produtos { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            
+            modelBuilder.Entity<Produto>().HasData(
+                new Produto {ProdutoId = 1, Titulo = "Celular", Preco= 1000},
+                new Produto { ProdutoId = 2, Titulo = "Notebook", Preco= 3000 },
+                new Produto { ProdutoId = 3, Titulo = "Televisão", Preco = 5000 }
+            );
+        }
 
     }
 }

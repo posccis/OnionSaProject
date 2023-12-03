@@ -9,7 +9,7 @@ namespace OnionSa.Repository.Interfaces
         void InserirVariosClientes<T>(List<T> clientes) where T : Cliente;
         void AlterarCliente<T>(T cliente) where T : Cliente;
         void RemoverCliente<T>(T cliente) where T : Cliente;
-        Task<Cliente> ObterClientePorDoc(long  documento);
+        Task<Cliente> ObterClientePorDoc(string  documento);
         Task<List<Cliente>> ObterTodosOsClientes();
     }
 }
