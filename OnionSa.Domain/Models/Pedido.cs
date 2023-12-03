@@ -13,11 +13,13 @@ namespace OnionSa.Domain.Models
     public class Pedido : IPedido
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public int Id { get; set; }
+
+        [Required]
         public int NumeroDoPedido { get; set; }
 
         [Required]
-        public long CPFCNPJ { get; set; }
+        public string CPFCNPJ { get; set; }
 
         [ForeignKey("CPFCNPJ")]
         public Cliente Cliente { get; set; }
@@ -29,9 +31,9 @@ namespace OnionSa.Domain.Models
 
         [Required]
         [MaxLength(8)]
-        public long Cep { get; set; }
+        public string Cep { get; set; }
 
         [Required]
-        public DateOnly Data { get; set; }
+        public DateTime Data { get; set; }
     }
 }

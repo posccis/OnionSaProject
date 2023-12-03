@@ -14,7 +14,7 @@ namespace OnionSa.Domain.Models
         [Key]
         [MaxLength(14)]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public long CPFCNPJ { get; set; }
+        public string CPFCNPJ { get; set; }
 
         [Required]
         [MaxLength(250)]
