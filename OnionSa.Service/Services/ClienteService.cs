@@ -36,7 +36,7 @@ namespace OnionSa.Service.Services
             {
                 Cliente cliente = new Cliente()
                 {
-                    CPFCNPJ = long.Parse(linha[0].ToString()),
+                    CPFCNPJ = linha[0].ToString(),
                     RazaoSocial = linha[1].ToString()
                     
                 };
@@ -125,7 +125,7 @@ namespace OnionSa.Service.Services
         /// </summary>
         /// <param name="documento"></param>
         /// <exception cref="OnionSaServiceException"></exception>
-        public async void RemoveClientePorDoc(long documento)
+        public async void RemoveClientePorDoc(string documento)
         {
             try
             {
@@ -152,7 +152,7 @@ namespace OnionSa.Service.Services
         /// <param name="documento"></param>
         /// <returns cref="Cliente">Retorna o objeto do cliente que possui o documento inserido.</returns>
         /// <exception cref="OnionSaServiceException"></exception>
-        public async Task<Cliente> ObtemClientePorDoc(long documento)
+        public async Task<Cliente> ObtemClientePorDoc(string documento)
         {
             try
             {

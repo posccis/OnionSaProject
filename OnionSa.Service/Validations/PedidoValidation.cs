@@ -20,8 +20,8 @@ namespace OnionSa.Service.Validations
         {
             if (pedido == null) throw new OnionSaServiceException("O objeto está nulo ou vazio. Revise os dados inseridos ou entre em contato com a equipe da Onion S.A e tente novamente.");
             if (pedido.NumeroDoPedido <= 0) throw new OnionSaServiceException("É necessário informar o numero do pedido. Revise os dados inseridos ou entre em contato com a equipe da Onion S.A e tente novamente.");
-            if (pedido.Cep <= 1 || pedido.Cep.ToString().Length < 8 || pedido.Cep.ToString().Length > 8) throw new OnionSaServiceException("É necessário informar um CEP válido. Revise os dados inseridos ou entre em contato com a equipe da Onion S.A e tente novamente.");
-            if (pedido.CPFCNPJ.ToString().Length < 11 || pedido.CPFCNPJ.ToString().Length < 14 || pedido.CPFCNPJ.ToString().Length > 14) throw new OnionSaServiceException("É necessário informar um CPF ou CNPJ válido. Revise os dados inseridos ou entre em contato com a equipe da Onion S.A e tente novamente.");
+            if (pedido.Cep.ToString().Length < 8 || pedido.Cep.ToString().Length > 8) throw new OnionSaServiceException("É necessário informar um CEP válido. Revise os dados inseridos ou entre em contato com a equipe da Onion S.A e tente novamente.");
+            if (pedido.CPFCNPJ.ToString().Length != 11 && pedido.CPFCNPJ.ToString().Length != 14) throw new OnionSaServiceException("É necessário informar um CPF ou CNPJ válido. Revise os dados inseridos ou entre em contato com a equipe da Onion S.A e tente novamente.");
         }
 
         public void ValidaObjetoDadosCep(DadosCep dadosCep) 

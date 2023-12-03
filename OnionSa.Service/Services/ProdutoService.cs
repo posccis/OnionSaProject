@@ -1,5 +1,6 @@
 ﻿using OnionSa.Domain.Models;
 using OnionSa.Repository.Context;
+using OnionSa.Repository.Interfaces;
 using OnionSa.Repository.Repositories;
 using OnionSa.Service.Exceptions;
 using OnionSa.Service.Validations;
@@ -13,13 +14,11 @@ namespace OnionSa.Service.Services
 {
     public class ProdutoService
     {
-        private readonly ProdutoRepository _repo;
-        private readonly OnionSaContext _cntxt;
+        private readonly IProdutoRepository _repo;
         private readonly ProdutoValidation ProdutoValidation;
-        public ProdutoService(OnionSaContext cntxt)
+        public ProdutoService(IProdutoRepository repo)
         {
-            _cntxt = cntxt;
-            _repo = new ProdutoRepository(_cntxt);
+            _repo = repo;
             ProdutoValidation = new ProdutoValidation();
         }
 
@@ -120,6 +119,32 @@ namespace OnionSa.Service.Services
                 throw new OnionSaServiceException($"Ocorreu um erro ao tentar obter o produto. Revise os dados enviados e tente novamente.\nMais detalhes:{ex.Message}");
             }
         }
+        /// <summary>
+        /// Método para obter um produto através do seu Id.
+        /// </summary>
+        /// <param name="documento"></param>
+        /// <returns cref="Produto">Retorna o objeto do produto que possui o Id inserido.</returns>
+        /// <exception cref="OnionSaServiceException"></exception>
+        public async Task<Produto> ObtemProdutoPorTitulo(string titulo)
+        {
+            try
+            {
+                var produto = await _repo.ObterProdutoPorTitulo(titulo);
+
+                ProdutoValidation.ValidaObjetoProduto(produto);
+
+                return produto;
+
+            }
+            catch (OnionSaServiceException onionExcp)
+            {
+                throw onionExcp;
+            }
+            catch (Exception ex)
+            {
+                throw new OnionSaServiceException($"Ocorreu um erro ao tentar obter o produto. Revise os dados enviados e tente novamente.\nMais detalhes:{ex.Message}");
+            }
+        }
 
         /// <summary>
         /// Método para obter a lista contentdo todos os produtos.
@@ -146,29 +171,8 @@ namespace OnionSa.Service.Services
                 throw new OnionSaServiceException($"Ocorreu um erro ao tentar obter todos os Produtos. Revise os dados enviados e tente novamente.\nMais detalhes:{ex.Message}");
             }
         }
-        //public async Task<List<Cliente>> ObtemTodosOsPedidosPorCliente(Cliente cliente) 
-        //{
-        //    try
-        //    {
-        //        var clientes = await _repo.ObterTodosOsClientes();
-        //        var clienteResultado = clientes.FirstOrDefault(cl => cl.CPFCNPJ == cliente.CPFCNPJ);
 
-        //        clienteResultado.Pedidos;
 
-        //        clienteValidation.ValidaListaDeClientes(clientes);
-
-        //        return clientes;
-
-        //    }
-        //    catch (OnionSaServiceException onionExcp)
-        //    {
-        //        throw onionExcp;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new OnionSaServiceException($"Ocorreu um erro ao tentar obter todos os clientes. Revise os dados enviados e tente novamente.\nMais detalhes:{ex.Message}");
-        //    }
-        //}
     }
 
 }

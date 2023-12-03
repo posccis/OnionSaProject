@@ -45,9 +45,10 @@ namespace OnionSa.Service.Services
             {
                 Pedido pedido = new Pedido()
                 {
-                    CPFCNPJ = long.Parse(linha[0].ToString()),
-                    Cep = long.Parse(linha[2].ToString()),
-                    Data = DateOnly.Parse(linha[5].ToString()),
+                    NumeroDoPedido = int.Parse(linha[4].ToString()),
+                    CPFCNPJ = linha[0].ToString(),
+                    Cep = linha[2].ToString(),
+                    Data = DateTime.Parse(linha[5].ToString()),
                 };
 
                 
@@ -436,6 +437,27 @@ namespace OnionSa.Service.Services
         public bool VerificaDiaUtil(DateOnly data)
         {
             return data.DayOfWeek == DayOfWeek.Sunday || data.DayOfWeek == DayOfWeek.Saturday;
+        }
+
+        /// <summary>
+        /// Método responsável por salvar as alterações realizadas.
+        /// </summary>
+        /// <exception cref="OnionSaServiceException"></exception>
+        public void SalvaAlteracoes()
+        {
+            try
+            {
+                _repo.Save();
+
+            }
+            catch (OnionSaServiceException onionExcp)
+            {
+                throw onionExcp;
+            }
+            catch (Exception ex)
+            {
+                throw new OnionSaServiceException($"Ocorreu um erro ao salvar as alterações. Revise os dados enviados e tente novamente.\nMais detalhes:{ex.Message}");
+            }
         }
 
 

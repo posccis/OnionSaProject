@@ -65,12 +65,14 @@ namespace OnionSa.Service.Services
         /// <returns>Retorna o DataRow tratado.</returns>
         public DataRow TrataCamposLinha(DataRow linha)
         {
+            DataRow novaLinha = linha;
             try
             {
-                linha.ItemArray[0] = TrataCampoDocumento(linha.ItemArray[0].ToString());
-                linha.ItemArray[2] = TrataCEP(linha.ItemArray[2].ToString());
+                linha["Documento"] = TrataCampoDocumento(linha.ItemArray[0].ToString());
+                linha["CEP"] = TrataCEP(linha.ItemArray[2].ToString());
+                linha.AcceptChanges();
 
-                return linha;
+                return novaLinha;
             }
             catch (Exception ex)
             {
@@ -86,7 +88,7 @@ namespace OnionSa.Service.Services
         /// <returns>Retorna o dado sem os caracteres especiais.</returns>
         private string TrataCampoDocumento(string doc) 
         { 
-            string novoDoc = doc.Replace("-", "").Replace(".", "").Replace("/", "");
+            string novoDoc = doc.Replace("-", "").Replace(".", "").Replace("/", "").Trim();
             return novoDoc;
         }
 

@@ -108,7 +108,7 @@ namespace OnionSa.Service.Validations
             if (!produtos.Any(p => p == produto)) throw new OnionSaServiceException($"O Produto da linha {index} não existe. Revise os dados inseridos ou entre em contato com a equipe da Onion S.A e tente novamente.");
             if(string.IsNullOrEmpty(numeroPedido) || Int32.Parse(numeroPedido) <= 0) throw new OnionSaServiceException($"O campo Número do Pedido da linha {index} não foi informado. Revise os dados inseridos ou entre em contato com a equipe da Onion S.A e tente novamente.");
             if(String.IsNullOrEmpty(data)) throw new OnionSaServiceException($"O campo Número do Data da linha {index} não foi informado. Revise os dados inseridos ou entre em contato com a equipe da Onion S.A e tente novamente.");
-            if(DateOnly.TryParse(data, out DateOnly dataS)) throw new OnionSaServiceException($"Não foi inserido uma Data válidaS na linha {linha}. Revise os dados inseridos ou entre em contato com a equipe da Onion S.A e tente novamente.");
+            if(!DateTime.TryParse(data, out DateTime dataS)) throw new OnionSaServiceException($"Não foi inserido uma Data válidaS na linha {linha}. Revise os dados inseridos ou entre em contato com a equipe da Onion S.A e tente novamente.");
         }
     }
 }
