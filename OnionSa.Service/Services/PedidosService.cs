@@ -217,9 +217,9 @@ namespace OnionSa.Service.Services
         /// <param name="cep"></param>
         /// <returns>Os dados relacionados ao cep do pedido.</returns>
         /// <exception cref="OnionSaServiceException"></exception>
-        public async Task<DadosCep> RetornaDadosDoCep(long cep) 
+        public async Task<DadosCep> RetornaDadosDoCep(string cep) 
         {
-            string urlCep = $"viacep.com.br/ws/{cep}/json/";
+            string urlCep = $"https://viacep.com.br/ws/{cep}/json/";
             DadosCep dadosCep = null;
             try
             {
@@ -364,14 +364,14 @@ namespace OnionSa.Service.Services
         /// <param name="regiao"></param>
         /// <returns>A data de entrega do pedido.</returns>
         /// <exception cref="OnionSaServiceException"></exception>
-        public async Task<DateOnly> CalculoDataDeEntrega(DateOnly dataDoPedido, string regiao)
+        public async Task<DateTime> CalculoDataDeEntrega(DateTime dataDoPedido, string regiao)
         {
             //Prazo de entrega baseado na região.
             int prazoNorteNordeste = 10;
             int prazoCentrSul = 5;
             int prazoSudeste = 1;
 
-            DateOnly dataEntrega;
+            DateTime dataEntrega = dataDoPedido;
             try
             {
                 if (regiao == "Sudeste")
@@ -407,16 +407,16 @@ namespace OnionSa.Service.Services
         /// <param name="dias"></param>
         /// <returns>Retorna a data de entrega do pedido.</returns>
         /// <exception cref="OnionSaServiceException"></exception>
-        public DateOnly DefineData(DateOnly data, int dias) 
+        private DateTime DefineData(DateTime data, int dias) 
         {
             int i = 1;
-            DateOnly dataEntrega;
+            DateTime dataEntrega = data;
             try
             {
                 //O laço irá ser executado enquanto a quantidade de dias úteis do prazo não tiver sido somada.
                 while (i < dias)
                 {
-                    dataEntrega = data.AddDays(i);
+                    dataEntrega = dataEntrega.AddDays(1);
                     //Caso o dia adicionado seja útil, é somado á váriavel i mais 1, caso não, continua o mesmo valor até o proximo dia útil.
                     if (!VerificaDiaUtil(dataEntrega)) i ++;
                 }
@@ -434,7 +434,7 @@ namespace OnionSa.Service.Services
         /// </summary>
         /// <param name="data"></param>
         /// <returns>Retorna true caso o dia seja um final de semana e false caso seja um dia útil.</returns>
-        public bool VerificaDiaUtil(DateOnly data)
+        private bool VerificaDiaUtil(DateTime data)
         {
             return data.DayOfWeek == DayOfWeek.Sunday || data.DayOfWeek == DayOfWeek.Saturday;
         }
