@@ -5,11 +5,14 @@ using OnionSa.Service.Exceptions;
 using OnionSa.Service.Services;
 using OnionSa.Service.Validations;
 using System.Data;
+using System.Net;
+using System.Net.Http;
+using System.Web.Http;
 
 namespace OnionSA.API.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("onionsa/[controller]")]
     public class PedidosController : ControllerBase
     {
         private readonly IPedidoRepository _repo;
@@ -25,7 +28,7 @@ namespace OnionSA.API.Controllers
 
         }
 
-        [AcceptVerbs("POST"), Route("onionsa/enviarplanilha")]
+        [AcceptVerbs("POST"), Route("enviar-planilha")]
         [HttpPost]
         public async Task<IActionResult> EnviarPlanilha([FromForm]IFormFile planilha)
         {
@@ -75,6 +78,62 @@ namespace OnionSA.API.Controllers
             catch (Exception ex)
             {
                 return BadRequest($"Ocorreu um erro ao tentar processar a planinha. Revise os dados enviados e tente novamente.\nMais detalhes:{ex.Message}");
+            }
+        }
+
+        [AcceptVerbs("GET"), Route("obter-dados")]
+        [HttpPost]
+        public async Task<IActionResult> ObtemDadosPlanilha()
+        {
+
+            PedidoValidation pedidoValidation = new PedidoValidation();
+            List<Cliente> clientes = new List<Cliente>();
+            List<Pedido> pedidos = new List<Pedido>();
+            List<PedidoDTO> pedidosDTOs = new List<PedidoDTO>();
+            try
+            {
+                pedidos = await _service.ObtemTodosOsPedidos();
+                foreach(Pedido pedido in pedidos)
+                {
+                    pedidoValidation.ValidaObjetoPedido(pedido);
+
+                    pedido.Produto = await _produtoService.ObtemProdutoPorId(pedido.ProdutoId);
+                    pedido.Cliente = await _clienteService.ObtemClientePorDoc(pedido.CPFCNPJ);
+
+                    PedidoDTO novoPedido = new PedidoDTO();
+
+                    var dadosCep = await _service.RetornaDadosDoCep(pedido.Cep);
+
+                    novoPedido.Regiao = await _service.IdentificaRegiaoPedido(dadosCep.UF);
+
+                    novoPedido.ValorFinal = await _service.CalculaPrecoFinal(pedido, novoPedido.Regiao);
+
+                    novoPedido.DataEntrega = await _service.CalculoDataDeEntrega(pedido.Data, novoPedido.Regiao);
+
+                    novoPedido.CEP = pedido.Cep;
+                    novoPedido.NumeroDoPedido = pedido.NumeroDoPedido;
+                    novoPedido.Produto = pedido.Produto.Titulo;
+                    novoPedido.RazaoSocial = pedido.Cliente.RazaoSocial;
+                    novoPedido.Documento = pedido.CPFCNPJ;
+                    novoPedido.Valor = pedido.Produto.Preco;
+                    novoPedido.Data = pedido.Data;
+
+                    pedidosDTOs.Add(novoPedido);
+                    
+                }
+
+                _service.SalvaAlteracoes();
+
+                return Ok(pedidosDTOs);
+                
+            }
+            catch (OnionSaServiceException onionExcp)
+            {
+                return BadRequest(onionExcp.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Ocorreu um erro ao tentar retornar os dados da planilha. Revise os dados enviados e tente novamente.\nMais detalhes:{ex.Message}");
             }
         }
     }
