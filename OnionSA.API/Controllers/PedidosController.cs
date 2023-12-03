@@ -15,11 +15,14 @@ namespace OnionSA.API.Controllers
         private readonly IPedidoRepository _repo;
         private readonly PedidoService _service;
         private readonly ClienteService _clienteService;
-        public PedidosController(IPedidoRepository repo, IClienteRepository clienteRepo)
+        private readonly ProdutoService _produtoService;
+        public PedidosController(IPedidoRepository repo, IClienteRepository clienteRepo, IProdutoRepository produtoRepo)
         {
             _repo = repo;
             _service = new PedidoService(repo);
             _clienteService = new ClienteService(clienteRepo);
+            _produtoService = new ProdutoService(produtoRepo);
+
         }
 
         [AcceptVerbs("POST"), Route("onionsa/enviarplanilha")]
@@ -38,14 +41,20 @@ namespace OnionSA.API.Controllers
                 foreach(DataRow linha in dt.Rows)
                 {
                     var novaLinha = csvService.TrataCamposLinha(linha);
-
+                    novaLinha.AcceptChanges();
                     csvValidation.ValidaLinhaDataTable(novaLinha, dt.Rows.IndexOf(linha));
 
                     var cliente = (_clienteService.CriaObjetoCliente(novaLinha));
                     clienteValidation.ValidaObjetoCliente(cliente);
-                    clientes.Add(cliente);
+                    if(!(clientes.Any(a => a.CPFCNPJ == cliente.CPFCNPJ)))
+                    {
+                        clientes.Add(cliente);
+
+                    }
 
                     var pedido = _service.CriaObjetoPedido(novaLinha);
+                    pedido.Produto = await _produtoService.ObtemProdutoPorTitulo(novaLinha["Produto"].ToString());
+                    pedido.ProdutoId = pedido.Produto.ProdutoId;
                     pedidoValidation.ValidaObjetoPedido(pedido);
                     pedidos.Add(pedido);
 
@@ -53,6 +62,8 @@ namespace OnionSA.API.Controllers
 
                 _clienteService.AdicionaVariosClientes(clientes);
                 _service.AdicionaVariosPedidos(pedidos);
+
+                _service.SalvaAlteracoes();
 
                 return Ok();
                 

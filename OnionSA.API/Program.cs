@@ -1,11 +1,17 @@
 using Microsoft.EntityFrameworkCore;
 using OnionSa.Repository.Context;
+using OnionSa.Repository.Interfaces;
+using OnionSa.Repository.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+
+builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
+builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
+builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>();
 
 builder.Services.AddDbContext<OnionSaContext>(op =>
 {

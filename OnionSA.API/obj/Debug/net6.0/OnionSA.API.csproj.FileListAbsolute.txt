@@ -87,3 +87,11 @@ D:\victor\estudos\programming\OnionSa\OnionSA.API\obj\Debug\net6.0\refint\OnionS
 D:\victor\estudos\programming\OnionSa\OnionSA.API\obj\Debug\net6.0\OnionSA.API.pdb
 D:\victor\estudos\programming\OnionSa\OnionSA.API\obj\Debug\net6.0\OnionSA.API.genruntimeconfig.cache
 D:\victor\estudos\programming\OnionSa\OnionSA.API\obj\Debug\net6.0\ref\OnionSA.API.dll
+D:\victor\estudos\programming\OnionSa\OnionSA.API\bin\Debug\net6.0\Humanizer.dll
+D:\victor\estudos\programming\OnionSa\OnionSA.API\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.Design.dll
+D:\victor\estudos\programming\OnionSa\OnionSA.API\bin\Debug\net6.0\Microsoft.Extensions.DependencyModel.dll
+D:\victor\estudos\programming\OnionSa\OnionSA.API\bin\Debug\net6.0\Mono.TextTemplating.dll
+D:\victor\estudos\programming\OnionSa\OnionSA.API\bin\Debug\net6.0\System.CodeDom.dll
+D:\victor\estudos\programming\OnionSa\OnionSA.API\bin\Debug\net6.0\System.Text.Encodings.Web.dll
+D:\victor\estudos\programming\OnionSa\OnionSA.API\bin\Debug\net6.0\System.Text.Json.dll
+D:\victor\estudos\programming\OnionSa\OnionSA.API\bin\Debug\net6.0\runtimes\browser\lib\net6.0\System.Text.Encodings.Web.dll
