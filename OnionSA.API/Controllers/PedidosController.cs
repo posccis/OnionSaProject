@@ -73,11 +73,15 @@ namespace OnionSA.API.Controllers
             }
             catch (OnionSaServiceException onionExcp)
             {
-                return BadRequest(onionExcp);
+                Console.WriteLine($"Exception: {onionExcp.Message}");
+
+                return BadRequest(onionExcp.Message);
             }
             catch (Exception ex)
             {
-                return BadRequest($"Ocorreu um erro ao tentar processar a planinha. Revise os dados enviados e tente novamente.\nMais detalhes:{ex.Message}");
+                Console.WriteLine($"Exception: {ex.Message}");
+
+                return BadRequest($"Ocorreu um erro ao tentar processar a planinha. Revise os dados enviados e tente novamente.");
             }
         }
 
@@ -133,7 +137,7 @@ namespace OnionSA.API.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest($"Ocorreu um erro ao tentar retornar os dados da planilha. Revise os dados enviados e tente novamente.\nMais detalhes:{ex.Message}");
+                return BadRequest($"Não foi possivel retornar os dados da planilha. Revise os dados enviados e tente novamente.");
             }
         }
     }

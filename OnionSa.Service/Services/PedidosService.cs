@@ -219,11 +219,12 @@ namespace OnionSa.Service.Services
         /// <exception cref="OnionSaServiceException"></exception>
         public async Task<DadosCep> RetornaDadosDoCep(string cep) 
         {
-            string urlCep = $"https://viacep.com.br/ws/{cep}/json/";
             DadosCep dadosCep = null;
             try
             {
-                using(HttpClient client = new HttpClient())
+                string urlCep = $"https://opencep.com/v1/{cep}.json";
+
+                using (HttpClient client = new HttpClient())
                 {
                     var response = await client.GetAsync(urlCep);
                     if(response.IsSuccessStatusCode)
@@ -235,11 +236,33 @@ namespace OnionSa.Service.Services
                     return dadosCep;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
+                try
+                {
+                    string urlCep = $"https://viacep.com.br/ws/{cep}/json/";
 
-                throw new OnionSaServiceException($"Ocorreu um erro ao obter os detalhes do cep. Revise os dados enviados ou entre em contato com a equipe de suporte da Onion S.A e tente novamente.\nMais detalhes: {ex.Message}.");
+                    using (HttpClient client = new HttpClient())
+                    {
+                        var response = await client.GetAsync(urlCep);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var conteudo = await response.Content.ReadAsStringAsync();
+                            dadosCep = JsonConvert.DeserializeObject<DadosCep>(conteudo);
+                        }
+
+                        return dadosCep;
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                    throw new OnionSaServiceException($"Ocorreu um erro ao obter os detalhes do cep. Revise os dados enviados ou entre em contato com a equipe de suporte da Onion S.A e tente novamente.\nMais detalhes: {ex.Message}.");
+                }
+
             }
+
+ 
         }
 
         /// <summary>
